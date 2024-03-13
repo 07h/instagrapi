@@ -16,23 +16,23 @@ from instagrapi.exceptions import (
     ClientConnectionError,
     ClientError,
     ClientForbiddenError,
-    PrivateAccount,
-    UserNotFound,
-    ProxyAddressIsBlocked,
-    InvalidTargetUser,
-    InvalidMediaId,
-    MediaUnavailable,
     ClientJSONDecodeError,
     ClientNotFoundError,
     ClientRequestTimeout,
     ClientThrottledError,
     FeedbackRequired,
+    InvalidMediaId,
+    InvalidTargetUser,
     LoginRequired,
+    MediaUnavailable,
     PleaseWaitFewMinutes,
+    PrivateAccount,
+    ProxyAddressIsBlocked,
     RateLimitError,
     SentryBlock,
     TwoFactorRequired,
     UnknownError,
+    UserNotFound,
     VideoTooLongException,
     InvalidTargetUser,
     MediaNotFound,
@@ -111,7 +111,6 @@ class PrivateRequestMixin:
         session.mount("https://", adapter)
         session.mount("http://", adapter)
         self.private = session
-
         self.private.verify = False  # fix SSLError/HTTPSConnectionPool
         self.email = kwargs.pop("email", None)
         self.phone_number = kwargs.pop("phone_number", None)

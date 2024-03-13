@@ -1,6 +1,7 @@
 import html
 import json
 import re
+import datetime
 from copy import deepcopy
 
 from .types import (
@@ -8,21 +9,23 @@ from .types import (
     Collection,
     Comment,
     DirectMedia,
-    Guide,
     DirectMessage,
     DirectResponse,
     DirectShortThread,
     DirectThread,
+    Guide,
     Hashtag,
     Highlight,
     Location,
     Media,
-    MediaXma,
     MediaOembed,
+    MediaXma,
     ReplyMessage,
     Resource,
     Story,
     StoryLink,
+    StoryLocation,
+    StoryHashtag,
     StoryMedia,
     StoryMention,
     Track,
@@ -293,6 +296,9 @@ def extract_direct_thread(data):
     if "inviter" in data:
         data["inviter"] = extract_user_short(data["inviter"])
     data["left_users"] = data.get("left_users", [])
+    data["last_activity_at"] = datetime.datetime.fromtimestamp(
+        data["last_activity_at"] // 1_000_000
+    )
     return DirectThread(**data)
 
 
@@ -321,6 +327,10 @@ def extract_reply_message(data):
             # Instagram ¯\_(ツ)_/¯
             clip = clip.get("clip")
         data["clip"] = extract_media_v1(clip)
+
+    data["timestamp"] = datetime.datetime.fromtimestamp(data["timestamp"] // 1_000_000)
+    data["user_id"] = str(data["user_id"])
+
     return ReplyMessage(**data)
 
 
@@ -348,6 +358,11 @@ def extract_direct_message(data):
     if xma_media_share:
         data["xma_share"] = extract_media_v1_xma(xma_media_share[0])
 
+    data["timestamp"] = datetime.datetime.fromtimestamp(
+        int(data["timestamp"]) // 1_000_000
+    )
+    data["user_id"] = str(data.get("user_id", ""))
+
     return DirectMessage(**data)
 
 
@@ -371,6 +386,7 @@ def extract_direct_media(data):
 
 
 def extract_account(data):
+    data["pk"] = str(data["pk"])
     data["external_url"] = data.get("external_url") or None
     return Account(**data)
 
@@ -390,6 +406,7 @@ def extract_hashtag_v1(data):
 def extract_story_v1(data):
     """Extract story from Private API"""
     story = deepcopy(data)
+    story["pk"] = str(story.get("pk"))
     if "video_versions" in story:
         # Select Best Quality by Resolutiuon
         story["video_url"] = sorted(
@@ -423,6 +440,7 @@ def extract_story_v1(data):
             story["links"].append(StoryLink(**link))
     story["user"] = extract_user_short(story.get("user"))
     story["sponsor_tags"] = [tag["sponsor"] for tag in story.get("sponsor_tags", [])]
+    story["is_paid_partnership"] = story.get("is_paid_partnership")
     return Story(**story)
 
 
@@ -458,7 +476,7 @@ def extract_story_gql(data):
     if story_cta_url:
         story["links"] = [StoryLink(**{"webUri": story_cta_url})]
     story["user"] = extract_user_short(story.get("owner"))
-    story["pk"] = int(story["id"])
+    story["pk"] = str(story["id"])
     story["id"] = f"{story['id']}_{story['owner']['id']}"
     story["code"] = InstagramIdCodec.encode(story["pk"])
     story["taken_at"] = story["taken_at_timestamp"]
@@ -493,4 +511,5 @@ def extract_track(data):
     )
     items = re.findall(r"<BaseURL>(.+?)</BaseURL>", data["dash_manifest"])
     data["uri"] = html.unescape(items[0]) if items else None
+    data["territory_validity_periods"] = data.get("territory_validity_periods") or {}
     return Track(**data)
