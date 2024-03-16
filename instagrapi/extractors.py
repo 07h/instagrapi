@@ -175,7 +175,7 @@ def extract_media_gql(data):
         ],
         width=media["dimensions"]["width"],
         height=media["dimensions"]["height"],
-        preview_url=media["display_resources"][0]["src"],
+        preview_url=media.get("display_resources", media.get("thumbnail_resources"))[0]["src"],
         sponsor_tags=[
             extract_user_short(edge["node"]["sponsor"])
             for edge in media.get("edge_media_to_sponsor_user", {}).get("edges", [])
