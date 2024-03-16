@@ -31,7 +31,7 @@ class Resource(TypesBaseModel):
 
 
 class BioLink(TypesBaseModel):
-    link_id: str
+    link_id: str = ""
     url: str
     lynx_url: Optional[str] = None
     link_type: Optional[str] = None
@@ -99,10 +99,12 @@ class Account(TypesBaseModel):
 class UserShort(TypesBaseModel):
     def __hash__(self):
         return hash(self.pk)
+
     def __eq__(self, other):
         if isinstance(other, UserShort):
             return self.pk == other.pk
         return NotImplemented
+
     pk: str
     username: Optional[str] = None
     full_name: Optional[str] = ""
