@@ -157,7 +157,7 @@ class PublicRequestMixin:
             time.sleep(self.request_timeout)
         try:
             if data is not None:  # POST
-                response = self.public.data(
+                response = self.public.post(
                     url,
                     data=data,
                     params=params,

@@ -155,7 +155,8 @@ def extract_media_gql(data):
         location=extract_location(location) if location else None,
         user=user,
         view_count=media.get("video_view_count", 0),
-        comment_count=json_value(media, "edge_media_to_comment", "count"),
+        comment_count=json_value(media, "edge_media_to_comment", "count") or json_value
+        (media, "edge_media_to_parent_comment", "count"),
         like_count=json_value(media, "edge_media_preview_like", "count"),
         caption_text=json_value(
             media, "edge_media_to_caption", "edges", 0, "node", "text", default=""
@@ -197,7 +198,7 @@ def extract_resource_v1(data):
 
 
 def extract_resource_gql(data):
-    data["media_type"] = MEDIA_TYPES_GQL[data["__typename"]]
+    data["media_type"] = MEDIA_TYPES_GQL[data["__typename"].replace("XDT", "")]
     return Resource(pk=data["id"], thumbnail_url=data["display_url"], **data)
 
 

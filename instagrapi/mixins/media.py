@@ -755,9 +755,9 @@ class MediaMixin:
             A list of objects of Media
         """
         default_nav = self.base_headers["X-IG-Nav-Chain"]
-        self.base_headers[
-            "X-IG-Nav-Chain"
-        ] = "MainFeedFragment:feed_timeline:12:main_home::,UserDetailFragment:profile:13:button::"
+        self.base_headers["X-IG-Nav-Chain"] = (
+            "MainFeedFragment:feed_timeline:12:main_home::,UserDetailFragment:profile:13:button::"
+        )
         medias = self.private_request(
             f"feed/user/{user_id}/",
             params={
