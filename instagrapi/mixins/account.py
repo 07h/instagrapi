@@ -30,7 +30,7 @@ class AccountMixin:
             headers={
                 "x-requested-with": "XMLHttpRequest",
                 "x-csrftoken": gen_token(),
-                "Connection": "Keep-Alive",
+                "Connection": "close",
                 "Accept": "*/*",
                 "Accept-Encoding": "gzip,deflate",
                 "Accept-Language": "en-US",

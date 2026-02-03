@@ -66,7 +66,7 @@ class PublicRequestMixin:
         self.public.verify = False  # fix SSLError/HTTPSConnectionPool
         self.public.headers.update(
             {
-                "Connection": "Keep-Alive",
+                "Connection": "close",
                 "Accept": "*/*",
                 "Accept-Encoding": "gzip,deflate",
                 "Accept-Language": "en-US",
@@ -82,7 +82,7 @@ class PublicRequestMixin:
     @property
     def public_base_headers(self):
         return {
-            "Connection": "Keep-Alive",
+            "Connection": "close",
             "Accept": "*/*",
             "Accept-Encoding": "gzip,deflate",
             "Accept-Language": "en-US",

@@ -183,7 +183,7 @@ class PrivateRequestMixin:
             "Accept-Encoding": "gzip, deflate",  # ignore zstd
             "Host": self.domain,
             "X-FB-HTTP-Engine": "Liger",
-            "Connection": "keep-alive",
+            "Connection": "close",
             # "Pragma": "no-cache",
             # "Cache-Control": "no-cache",
             "X-FB-Client-IP": "True",
